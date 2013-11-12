@@ -50,6 +50,8 @@ exports.Xinit = function () {
     return exec
 }
 
-function serialize(){
-    return s.serializeToString(exec)
+exports.serialize = function (xml) {
+    s = new XMLSerializer();
+    return s.serializeToString(xml || Xinit())
 }
+})((typeof(exports) === "undefined") ? this['wps_builder'] = {} : exports)

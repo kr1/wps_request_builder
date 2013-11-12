@@ -30,11 +30,25 @@ if (typeof(this.tests) === 'undefined') {
     '       </ows:Identifier>' +
     '     </wps:RawDataOutput>' +
     '   </wps:ResponseForm>' +
-    '   </wps:Execute>'
+    '   </wps:Execute>';
 
 
 exports.display_simple_geom = function () {
-    document.getElementById("left_code").innerText = vkbeautify.xml(wps_builder.serialize(wps_builder.Xinit()))
+    document.getElementById("left_code").innerText = vkbeautify.xml(
+        wps_builder.serialize(
+            wps_builder.build({
+              identifier: "geo:envelope",
+              inputs: [{
+                  identifier: "geom",
+                  mimeType: "application/wkt",
+                  data: "POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))]]>"
+              }],
+              response: {
+                  identifier: "result",
+                  mimeType: "application/wkt",
+              }
+            }
+    )));
     document.getElementById("right_code").innerText = vkbeautify.xml(exports.simple_geom_example)
 }
 })((typeof(exports) === "undefined") ? this['tests']['simple_geom'] = {} : exports)

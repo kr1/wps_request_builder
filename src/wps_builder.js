@@ -1,52 +1,70 @@
 (function (exports) {
 
-exports.Xinit = function () {
-    var docu = new DOMParser().parseFromString('<xml></xml>',  "application/xml")
-//    var wpsDocType = docu.implementation.createDocumentType ("wps", "SYSTEM", "<!ENTITY tf 'wps'>"),
-//       doc = docu.implementation.createDocument("http://ogc.org/wps", "wps", wpsDocType),
-        exec = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Execute");
-    exec.setAttributeNS( "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation","http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd")
-    exec.setAttribute("version", "1.0.0")
-    exec.setAttribute("service", "WPS")
-    docu.documentElement.appendChild(exec)
-    // Process
-    var ideP = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
-    var tide = docu.createTextNode("geo:envelope");
+exports.make_execute_document = function() {
+    exports.docu = new DOMParser().parseFromString('<xml></xml>',  "application/xml"),
+    exports.exec = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Execute");
+    exports.exec.setAttributeNS( "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation","http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd")
+    exports.exec.setAttribute("version", "1.0.0")
+    exports.exec.setAttribute("service", "WPS")
+    exports.docu.documentElement.appendChild(exports.exec)
+    return exports.docu
+}
+
+exports.add_identifier = function (ident) {
+    var ideP = exports.docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
+    var tide = exports.docu.createTextNode(ident);
     ideP.appendChild(tide)
-    exec.appendChild(ideP);
-    // Inputs
-    var inputs = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:DataInputs" )
-    exec.appendChild(inputs)
-    //Input identifyier
-    var input = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:Input" )
-    var ideG = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
-    var tide = docu.createTextNode("geom");
-    ideG.appendChild(tide)
-    var titleG = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title")
-    var ttitle = docu.createTextNode("geom");
-    titleG.appendChild(ttitle)
-    input.appendChild(titleG);
-    input.appendChild(ideG);
-    //ideG.appendChild(input2)
+    exports.exec.appendChild(ideP);
+}
+
+exports.add_inputs = function (inputs_def) {
+    var inputs = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:DataInputs" )
+    exports.exec.appendChild(inputs)
+
+    var input_def = inputs_def[0] //TODO: make accept multiple inputs
+    //Input identifier
+    var input = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:Input" )
+    var identifier = exports.docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
+    var tide = exports.docu.createTextNode(input_def.identifier);
+    identifier.appendChild(tide)
+    var title = exports.docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title")
+    var title_cont = exports.docu.createTextNode(input_def.identifier);
+    title.appendChild(title_cont)
+    input.appendChild(title);
+    input.appendChild(identifier);
     inputs.appendChild(input)
-    var data = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:Data");
-    var cd = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:ComplexData")
-    cd.setAttribute("mimeType", "application/wkt")
-    var wkt = docu.createCDATASection("POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))");
-    cd.appendChild(wkt)
-    data.appendChild(cd)
-    input.appendChild(data)
-    //input.innerText = "ert"
-    //ideG.appendChild(input);
-    var resp = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:ResponseForm");
-    var rawDataOut = docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:RawDataOutput");
-    rawDataOut.setAttribute("mimeType", "application/wkt")
-    var ideOut = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
-    var tideOut = docu.createTextNode("result");
-    ideOut.appendChild(tideOut);
-    rawDataOut.appendChild(ideOut);
+    var data = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:Data");
+    var cd = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:ComplexData")
+    cd.setAttribute("mimeType", input_def.mimeType)
+    if (input_def.mimeType == "application/wkt") {
+        var cd_cont = exports.docu.createCDATASection(input_def.data);
+    }
+    cd.appendChild(cd_cont);
+    data.appendChild(cd);
+    input.appendChild(data);
+}
+
+exports.add_response_form = function (response_def) {
+    var resp = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:ResponseForm");
+    var rawDataOut = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:RawDataOutput");
+    rawDataOut.setAttribute("mimeType", response_def.mimeType)
+    var ident = exports.docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
+    var ident_cont = exports.docu.createTextNode(response_def.identifier);
+    ident.appendChild(ident_cont);
+    rawDataOut.appendChild(ident);
     resp.appendChild(rawDataOut);
-    exec.appendChild(resp);
+    exports.exec.appendChild(resp);
+}
+
+exports.build = function (configuration) {
+    // Process
+    var docu = exports.make_execute_document();
+    var exec = docu.getElementsByTagName("Execute")[0];
+    exports.add_identifier(configuration.identifier)
+    // Inputs
+    exports.add_inputs(configuration.inputs)
+    // ResposeForm
+    exports.add_response_form(configuration.response)
     return exec
 }
 

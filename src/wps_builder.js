@@ -25,8 +25,8 @@ exports.add_inputs = function (inputs_def) {
         tide = exports.docu.createTextNode(input_def.identifier),
         title = exports.docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title"),
         title_cont = exports.docu.createTextNode(input_def.identifier),
-        data = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:Data"),
-        cd = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0","wps:ComplexData");
+        data = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data"),
+        cd = exports.docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:ComplexData");
     cd.setAttribute("mimeType", input_def.mimeType);
     if (input_def.mimeType == "application/wkt") {
         var cd_cont = exports.docu.createCDATASection(input_def.data);
@@ -63,11 +63,11 @@ exports.build = function (configuration) {
     exports.add_inputs(configuration.inputs)
     // ResposeForm
     exports.add_response_form(configuration.response)
-    return exec
+    return docu
 }
 
 exports.serialize = function (xml) {
     s = new XMLSerializer();
-    return s.serializeToString(xml || Xinit())
+    return s.serializeToString(xml)
 }
 })((typeof(exports) === "undefined") ? this['wps_builder'] = {} : exports)

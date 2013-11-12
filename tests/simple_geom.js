@@ -1,5 +1,5 @@
-if (typeof(this.tests) === 'undefined') {
-    this['tests'] = {}
+if (typeof(this.wps_builder.tests) === 'undefined') {
+    this.wps_builder.tests = {};
 }
 
 (function (exports) {
@@ -41,7 +41,7 @@ exports.display_simple_geom = function () {
               inputs: [{
                   identifier: "geom",
                   mimeType: "application/wkt",
-                  data: "POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))]]>"
+                  data: "POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))"
               }],
               response: {
                   identifier: "result",
@@ -51,4 +51,4 @@ exports.display_simple_geom = function () {
     )));
     document.getElementById("right_code").innerText = vkbeautify.xml(exports.simple_geom_example)
 }
-})((typeof(exports) === "undefined") ? this['tests']['simple_geom'] = {} : exports)
+})((typeof(exports) === "undefined") ? this.wps_builder['tests']['simple_geom'] = {} : exports)

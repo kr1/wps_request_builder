@@ -70,7 +70,7 @@ function Xinit(){
     rawDataOut.setAttribute("mimeType", "application/wkt")
     var ideOut = document.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier")
     var tideOut = document.createTextNode("result");
-    var ideOut.appendChild(tideOut);
+    ideOut.appendChild(tideOut);
     rawDataOut.appendChild(ideOut);
     resp.appendChild(rawDataOut);
     exec.appendChild(resp);

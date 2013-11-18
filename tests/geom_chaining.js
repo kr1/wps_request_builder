@@ -2,7 +2,8 @@
 
 (function (exports) {
     exports.geomChainingExample = "" +
-    "<?xml version='1.0' encoding='UTF-8'?><wps:Execute version='1.0.0' service='WPS' " +
+    "<?xml version='1.0' encoding='UTF-8'?>" +
+    "<wps:Execute version='1.0.0' service='WPS' " +
     "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.opengis.net/wps/1.0.0' " +
     "xmlns:wfs='http://www.opengis.net/wfs' xmlns:wps='http://www.opengis.net/wps/1.0.0' " +
     "xmlns:ows='http://www.opengis.net/ows/1.1' xmlns:gml='http://www.opengis.net/gml' " +

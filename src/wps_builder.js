@@ -51,12 +51,12 @@
             data.appendChild(cd);
             input.appendChild(data);
         } else if (inputDef.reference) {
+            reference = docu.createElement("wps:Reference");
+            body = docu.createElement("wps:Body");
             if (inputDef.reference.type === "wfs") {
-                reference = docu.createElement("wps:Reference");
                 reference.setAttribute("mimeType", "text/xml");
                 reference.setAttribute("xlink:href", "http://geoserver/wfs");
                 reference.setAttribute("method", "POST");
-                body = docu.createElement("wps:Body");
                 getFeature = docu.createElement("wfs:GetFeature");
                 getFeature.setAttribute("service", "WFS");
                 getFeature.setAttribute("version", "1.0.0");
@@ -68,6 +68,26 @@
                 reference.appendChild(body);
                 body.appendChild(getFeature);
                 getFeature.appendChild(query);
+                input.appendChild(reference);
+            } else if (inputDef.reference.type === "wcs") {
+                reference.setAttribute("mimeType", "image/tiff");
+                reference.setAttribute("xlink:href", "http://geoserver/wcs");
+                reference.setAttribute("method", "POST");
+                wcsIdentifier = docu.createElement("ows:Identifier");
+                wcsIdentifierCont = docu.createTextNode(inputDef.reference.identifier);
+                wcsIdentifier.appendChild(wcsIdentifierCont);
+                getCoverage = docu.createElement("wfs:GetCoverage");
+                getCoverage.setAttribute("service", "WCS");
+                getCoverage.setAttribute("version", "1.1.1");
+                domainSubset = docu.createElement("wcs:DomainSubset");
+                output = docu.createElement("wcs:Output");
+                output.setAttribute("format", "image/tiff");
+                getCoverage.appendChild(domainSubset);
+                getCoverage.appendChild(output);
+                getCoverage.appendChild(wcsIdentifier);
+                body.appendChild(getCoverage);
+                reference.appendChild(body);
+                reference.appendChild(identifier);
                 input.appendChild(reference);
             }
         } else if (inputDef.subprocess) {

@@ -37,7 +37,7 @@
 
     exports.addInput = function (inputDef, docu) {
         var input = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Input"),
-            identifier = docu.createElement("ows:Identifier"),
+            identifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier"),
             identifierCont = docu.createTextNode(inputDef.identifier),
             //title = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title"),
             //titleCont = docu.createTextNode(inputDef.identifier),
@@ -75,7 +75,7 @@
                 reference.setAttribute("mimeType", "image/tiff");
                 reference.setAttribute("xlink:href", "http://geoserver/wcs");
                 reference.setAttribute("method", "POST");
-                wcsIdentifier = docu.createElement("ows:Identifier");
+                wcsIdentifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier");
                 wcsIdentifierCont = docu.createTextNode(inputDef.reference.identifier);
                 wcsIdentifier.appendChild(wcsIdentifierCont);
                 getCoverage = docu.createElement("wfs:GetCoverage");

@@ -5,18 +5,32 @@
     <script src="../src/vendor/vkbeautify.js"></script>
     <script src="../src/vendor/equivalent-xml.js"></script>
     <script src="../src/vendor/underscore-min.js"></script>
-    <script src="../tests/utils.js"></script>
     <script src="../tests/simple_geom.js"></script>
+    <script src="../tests/utils.js"></script>
     <script src="../tests/geom_and_wfs_layer.js"></script>
-    <script src="../tests/geom_chaining.js"></script>
+    <script src="../tests/feature_chaining.js"></script>
     <script src="../tests/coverage_chaining.js"></script>
     <script src="../tests/coverage_import.js"></script>
   </head>
   <body>
     <table style="width:100%">
       <tr>
-        <th>left</th>
-        <th>right</th>
+        <td>simpleGeom</td>
+        <td>ok</td>
+      </tr>
+      <tr>
+        <td>featureChaining</td>
+        <td>ok</td>
+      </tr>
+      <tr>
+        <td>coverageImport</td>
+        <td>ok</td>
+      </tr>
+    </table>
+    <table style="width:100%">
+      <tr>
+        <th>node1 (built)</th>
+        <th>node2 (reference)</th>
       </tr>
       <tr>
         <td id="left">

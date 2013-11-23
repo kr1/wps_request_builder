@@ -1,4 +1,4 @@
-/* global vkbeautify, wpsBuilder, EquivalentXml*/
+/* global _, vkbeautify, wpsBuilder, EquivalentXml*/
 if (typeof(this.wpsBuilder.tests) === "undefined") {
     this.wpsBuilder.tests = {};
 }
@@ -8,33 +8,33 @@ if (typeof(this.wpsBuilder.tests) === "undefined") {
 // example payload
     exports.simpleGeomExample = "<wps:Execute xmlns:wps='http://www.opengis.net/wps/1.0.0' " +
     "version='1.0.0' service='WPS' xsi:schemaLocation='http://www.opengis.net/wps/1.0.0 " +
-    " http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>" +
-    "   <ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>" +
-    "     geo:envelope" +
-    "   </ows:Identifier>" +
-    "   <wps:DataInputs>" +
-    "     <wps:Input>" +
-    "       <ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>geom" +
-    "       </ows:Identifier>" +
-  // title is not necessary?
-  //"       <ows:Title xmlns:ows='http://www.opengis.net/ows/1.1'>" +
-  //"         geom" +
-  //"       </ows:Title>" +
-    "       <wps:Data>" +
-    "         <wps:ComplexData mimeType='application/wkt'>" +
-    "           <![CDATA[POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))]]>" +
-    "         </wps:ComplexData>" +
-    "       </wps:Data>" +
-    "     </wps:Input>" +
-    "   </wps:DataInputs>" +
-    "   <wps:ResponseForm>" +
-    "     <wps:RawDataOutput mimeType='application/wkt'>" +
-    "       <ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>" +
-    "         result" +
-    "       </ows:Identifier>" +
-    "     </wps:RawDataOutput>" +
-    "   </wps:ResponseForm>" +
-    "   </wps:Execute>";
+     "http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>" +
+       "<ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>" +
+         "geo:envelope" +
+       "</ows:Identifier>" +
+       "<wps:DataInputs>" +
+         "<wps:Input>" +
+           "<ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>geom" +
+           "</ows:Identifier>" +
+  //title is not necessary?
+  //       <ows:Title xmlns:ows='http://www.opengis.net/ows/1.1'>" +
+  //         geom" +
+  //       </ows:Title>" +
+           "<wps:Data>" +
+             "<wps:ComplexData mimeType='application/wkt'>" +
+               "<![CDATA[POLYGON((110 20,120 20,120 10,110 10,110 20),(112 17,118 18,118 16,112 15,112 17))]]>" +
+             "</wps:ComplexData>" +
+           "</wps:Data>" +
+         "</wps:Input>" +
+       "</wps:DataInputs>" +
+       "<wps:ResponseForm>" +
+         "<wps:RawDataOutput mimeType='application/wkt'>" +
+           "<ows:Identifier xmlns:ows='http://www.opengis.net/ows/1.1'>" +
+             "result" +
+           "</ows:Identifier>" +
+         "</wps:RawDataOutput>" +
+       "</wps:ResponseForm>" +
+       "</wps:Execute>";
 
     exports.buildExample = function () {
         return wpsBuilder.build({
@@ -70,6 +70,19 @@ if (typeof(this.wpsBuilder.tests) === "undefined") {
             resp = EquivalentXml.isEquivalent(exampleDoc.getElementsByTagName("ResponseForm")[0],
                                                   built.getElementsByTagName("ResponseForm")[0]);
         return [ide, inps, resp];
+    };
+
+    exports.runTests = function () {
+        var built = exports.buildExample();
+        _.each(built.firstChild.childNodes, function (node, idx) {
+            var exampleDoc = new DOMParser().parseFromString(exports.simpleGeomExample, "application/xml"),
+                refNode = exampleDoc.firstChild.childNodes[idx],
+                equiv = wpsBuilder.tests.utils.compareNodes(node, refNode);
+            console.log("comparing: ", node, " with: ", refNode, " result: ", equiv);
+            if (!equiv) {
+                throw "AssertionError: nodes not equivalent";
+            }
+        });
     };
 
 

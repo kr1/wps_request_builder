@@ -13,7 +13,7 @@ var deps = {
     },
     Tests: {
         src: ['../tests/geom_and_wfs_layer.js',
-              '../tests/geom_chaining.js',
+              '../tests/feature_chaining.js',
               '../tests/coverage_chaining.js',
               '../tests/coverage_import.js',
               '../tests/simple_geom.js',

@@ -34,7 +34,8 @@
         "              <wps:Input>" +
         "                <ows:Identifier>cropShape</ows:Identifier>" +
         "                <wps:Data>" +
-        "                  <wps:ComplexData mimeType='application/wkt'><![CDATA[POLYGON((110 20,120 20,120 10,110 10,110 20), " +
+        "                  <wps:ComplexData mimeType='application/wkt'><![CDATA[POLYGON(" +
+        "                              (110 20,120 20,120 10,110 10,110 20), " +
         "                              (112 17,118 18,118 16,112 15,112 17))]]></wps:ComplexData>" +
         "                </wps:Data>" +
         "              </wps:Input>" +

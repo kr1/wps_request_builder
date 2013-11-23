@@ -1,4 +1,4 @@
-/* global vkbeautify, wpsBuilder*/
+/* global vkbeautify, wpsBuilder, EquivalentXml*/
 if (typeof(this.wpsBuilder.tests) === "undefined") {
     this.wpsBuilder.tests = {};
 }
@@ -36,7 +36,7 @@ if (typeof(this.wpsBuilder.tests) === "undefined") {
     "   </wps:ResponseForm>" +
     "   </wps:Execute>";
 
-    exports.build_example = function () {
+    exports.buildExample = function () {
         return wpsBuilder.build({
                 identifier: "geo:envelope",
                 inputs: [{
@@ -52,25 +52,25 @@ if (typeof(this.wpsBuilder.tests) === "undefined") {
     };
 
     exports.displaySimpleGeom = function () {
-        var text = exports.build_example();
+        var text = exports.buildExample(),
             ser = wpsBuilder.serialize(text);
         document.getElementById("left_code").innerText = vkbeautify.xml(ser);
         document.getElementById("right_code").innerText = vkbeautify.xml(exports.simpleGeomExample);
         return true;
     };
     exports.testSimpleGeom = function () {
-        edp = new DOMParser();
-            exampleDoc = edp.parseFromString(wpsBuilder.tests.simpleGeom.simpleGeomExample, 'application/xml');
-            built = wpsBuilder.tests.simpleGeom.build_example();
-        inputs = [exampleDoc.getElementsByTagName("DataInputs")[0],
+        var edp = new DOMParser(),
+            exampleDoc = edp.parseFromString(wpsBuilder.tests.simpleGeom.simpleGeomExample, "application/xml"),
+            built = wpsBuilder.tests.simpleGeom.buildExample(),
+            inputs = [exampleDoc.getElementsByTagName("DataInputs")[0],
                                                   built.getElementsByTagName("DataInputs")[0]];
         var  ide = EquivalentXml.isEquivalent(exampleDoc.getElementsByTagName("Identifier")[0],
                                                   built.getElementsByTagName("Identifier")[0]),
             inps = EquivalentXml.isEquivalent(inputs[0], inputs[1]),
             resp = EquivalentXml.isEquivalent(exampleDoc.getElementsByTagName("ResponseForm")[0],
                                                   built.getElementsByTagName("ResponseForm")[0]);
-            return [ide, inps, resp]
-    }
+        return [ide, inps, resp];
+    };
 
 
 })((typeof(exports) === "undefined") ? this.wpsBuilder.tests.simpleGeom = {} : exports);

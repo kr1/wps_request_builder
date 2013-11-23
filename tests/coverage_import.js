@@ -57,28 +57,27 @@
         "</wps:Execute>";
 
     exports.displayCoverageImport = function () {
-            text = wpsBuilder.build({
+        var text = wpsBuilder.build({
                 identifier: "gs:Import",
                 inputs: [{
-                        identifier: "coverage",
-                        reference: {
-                            type: "wcs",
-                            identifier: "nurc:Img_Sample"
-                        }
-                    }, {
-                        identifier: "workspace",
-                        data: "workS"
-                    }, {
-                        identifier: "store",
-                        data: "Sto",
-                    }, {
-                        identifier: "name",
-                        data: "Nöm"
-                    }, {
-                        identifier: "srs",
-                        data: "EPSG:32632"
+                    identifier: "coverage",
+                    reference: {
+                        type: "wcs",
+                        identifier: "nurc:Img_Sample"
                     }
-                ],
+                }, {
+                    identifier: "workspace",
+                    data: "workS"
+                }, {
+                    identifier: "store",
+                    data: "Sto",
+                }, {
+                    identifier: "name",
+                    data: "Nöm"
+                }, {
+                    identifier: "srs",
+                    data: "EPSG:32632"
+                }],
                 response: {
                     identifier: "layerName",
                 }

@@ -1,21 +1,25 @@
 (function (exports) {
 
-    exports.makeExecuteDocument = function (options) {
+    exports.makeExecuteDocument = function () {
         var namespaces = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
             " xmlns='http://www.opengis.net/wps/1.0.0'  xmlns:wfs='http://www.opengis.net/wfs' " +
-            "xmlns:ows='http://www.opengis.net/ows/1.1' " +
+            " xmlns:wps='http://www.opengis.net/wps/1.0.0' xmlns:ows='http://www.opengis.net/ows/1.1' " +
             "xmlns:gml='http://www.opengis.net/gml' xmlns:ogc='http://www.opengis.net/ogc' " +
             "xmlns:wcs='http://www.opengis.net/wcs/1.1.1' xmlns:xlink='http://www.w3.org/1999/xlink' " +
             "xsi:schemaLocation='http://www.opengis.net/wps/1.0.0 " +
             "http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd'",
             docu;
-        if (options && options.withoutNamespaces) {
-            namespaces = "";
-        }
         docu = new DOMParser().parseFromString("" +
-            "<wps:Execute version='1.0.0' service='WPS' xmlns:wps='http://www.opengis.net/wps/1.0.0'" +
+            "<wps:Execute version='1.0.0' service='WPS' " +
             namespaces + "></wps:Execute>", "application/xml");
         return docu;
+    };
+
+    exports.makeExecuteNode = function (docu) {
+        var node = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Execute");
+        node.setAttribute("version", "1.0.0");
+        node.setAttribute("service", "WPS");
+        return node;
     };
 
     exports.addIdentifier = function (ident, docu, exec) {
@@ -41,9 +45,10 @@
             identifierCont = docu.createTextNode(inputDef.identifier),
             //title = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title"),
             //titleCont = docu.createTextNode(inputDef.identifier),
-            data, litData, cd, cdCont, reference, body, getFeature, query,
+            data, cd, cdCont, reference, body, getFeature, query,
             wcsIdentifier, wcsIdentifierCont, getCoverage, domainSubset,
             output, litData, litDataCont;
+        input.appendChild(identifier);
         if (inputDef.mimeType && inputDef.mimeType === "application/wkt") {
             data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data");
             cd = docu.createElement("wps:ComplexData");
@@ -95,20 +100,19 @@
             }
         } else if (inputDef.subprocess) {
             var proc = inputDef.subprocess,
-                subtreeDoc = exports.makeExecuteDocument({withoutNamespaces: true}),
-                subtree = subtreeDoc.firstChild;
-            body = subtreeDoc.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Body");
-            reference = subtreeDoc.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Reference");
+                subtree = exports.makeExecuteNode(docu);
+            body = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Body");
+            reference = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Reference");
             reference.setAttribute("mimeType", "text/xml; subtype=gml/3.1.1");
             reference.setAttribute("xlink:href", "http://geoserver/wps");
             reference.setAttribute("method", "POST");
             reference.appendChild(body);
             body.appendChild(subtree);
-            exports.addIdentifier(proc.identifier, subtreeDoc, body);
+            exports.addIdentifier(proc.identifier, docu, subtree);
             // Inputs
-            exports.addInputs(proc.inputs, subtreeDoc, body);
+            exports.addInputs(proc.inputs, docu, subtree);
             // ResposeForm
-            exports.addResponseForm(proc.response, subtreeDoc, body);
+            exports.addResponseForm(proc.response, docu, subtree);
             input.appendChild(reference);
         } else { //plain input ad data
             data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data");
@@ -122,7 +126,6 @@
         // TODO: check: is title necessary?
         //title.appendChild(titleCont);
         //input.appendChild(title);
-        input.appendChild(identifier);
         return input;
     };
 

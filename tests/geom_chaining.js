@@ -10,10 +10,10 @@
     "xmlns:ogc='http://www.opengis.net/ogc' xmlns:wcs='http://www.opengis.net/wcs/1.1.1' " +
     "xmlns:xlink='http://www.w3.org/1999/xlink' " +
     "xsi:schemaLocation='http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd'>" +
-    "  <ows:Identifier>geo:centroid</ows:Identifier>" +
+    "  <ows:Identifier>vec:Centroid</ows:Identifier>" +
     "  <wps:DataInputs>" +
     "    <wps:Input>" +
-    "      <ows:Identifier>geom</ows:Identifier>" +
+    "      <ows:Identifier>features</ows:Identifier>" +
     "      <wps:Reference mimeType='text/xml; subtype=gml/3.1.1' xlink:href='http://geoserver/wps' method='POST'>" +
     "        <wps:Body>" +
     "          <wps:Execute version='1.0.0' service='WPS'>" +
@@ -33,7 +33,8 @@
     "              <wps:Input>" +
     "                <ows:Identifier>clip</ows:Identifier>" +
     "                <wps:Data>" +
-    "                  <wps:ComplexData mimeType='application/wkt'><![CDATA[]]></wps:ComplexData>" +
+    "                  <wps:ComplexData mimeType='application/wkt'><![CDATA[" +
+    "                      POLYGON((146 -41,146 -43,147 -43,147 -41,146 -41))]]></wps:ComplexData>" +
     "                </wps:Data>" +
     "              </wps:Input>" +
     "            </wps:DataInputs>" +
@@ -54,7 +55,7 @@
     "  </wps:ResponseForm>" +
     "</wps:Execute>";
 
-    exports.displayGeomChaining = function () {
+    exports.buildExample = function () {
         var innerProcessClip = {
                 identifier: "gs:Clip",
                 inputs: [{
@@ -71,18 +72,22 @@
                     mimeType: "text/xml; subtype=wfs-collection/1.0"
                 }
             },
-            text = wpsBuilder.build({
-                identifier: "geo:centroid",
+            doc = wpsBuilder.build({
+                identifier: "vec:Centroid",
                 inputs: [{
-                    identifier: "geom",
+                    identifier: "features",
                     subprocess: innerProcessClip
                 }],
                 response: {
                     identifier: "result",
-                    mimeType: "application/wkt",
+                    mimeType: "mimeType='text/xml; subtype=gml/3.1.1",
                 }
-            }),
-            ser = wpsBuilder.serialize(text);
+            });
+        return doc;
+    };
+    exports.displayGeomChaining = function () {
+        var doc = exports.buildExample(),
+            ser = wpsBuilder.serialize(doc);
         document.getElementById("left_code").innerText = vkbeautify.xml(ser);
         document.getElementById("right_code").innerText = vkbeautify.xml(exports.geomChainingExample);
         return true;

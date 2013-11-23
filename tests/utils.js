@@ -11,3 +11,20 @@ var walk_the_DOM = function walk(node, func) {
         node = node.nextSibling;
     }
 };
+
+call_geo_server = function (docstring) {
+    var r = new XMLHttpRequest(),
+        data;
+    r.open("POST", "http://localhost:8888/geoserver/wps/", true);
+    r.onreadystatechange = function () {
+        if (r.readyState != 4 || r.status != 200) return; 
+        res = r;
+        console.log(r.responseText);
+    };
+    if (docstring.slice(0,5) == "<?xml") {
+        data = docstring;
+    } else {
+        data = "<?xml version='1.0' encoding='UTF-8'?>" + docstring;
+    }
+    r.send(data);
+}

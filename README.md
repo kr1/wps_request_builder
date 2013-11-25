@@ -11,7 +11,7 @@ this means that you - the developer - have to know:
 
 1. define the process that you want to call, as a javascript object:
 
-       var procDef = {identifier: "geo:envelope",
+        var procDef = {identifier: "geo:envelope",
                   inputs: [{
                       identifier: "geom",
                       mimeType: "application/wkt",

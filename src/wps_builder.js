@@ -97,8 +97,6 @@
                 getCoverage.appendChild(output);
                 body.appendChild(getCoverage);
                 reference.appendChild(body);
-                // TODO: check the folloeing idetifier, necessary?
-                //reference.appendChild(identifier);
                 input.appendChild(reference);
             }
         } else if (inputDef.subprocess) {
@@ -106,7 +104,7 @@
                 subtree = exports.makeExecuteNode(docu);
             body = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Body");
             reference = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Reference");
-            reference.setAttribute("mimeType", "text/xml; subtype=gml/3.1.1");
+            reference.setAttribute("mimeType", (inputDef.mimeType ? inputDef.mimeType : "text/xml; subtype=gml/3.1.1"));
             reference.setAttribute("xlink:href", "http://geoserver/wps");
             reference.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
             reference.setAttribute("method", "POST");

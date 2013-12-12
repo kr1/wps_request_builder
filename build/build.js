@@ -8,7 +8,7 @@ var fs = require('fs'),
     jshint = require('jshint'),
     UglifyJS = require('uglify-js'),
 
-    deps = require('./deps.js').deps,
+    deps = require('./deps.js'),
     hintrc = require('./hintrc.js').config;
 
 function lintFiles(files) {
@@ -32,7 +32,7 @@ function lintFiles(files) {
     return errorsFound;
 }
 
-function getFiles(compsBase32) {
+function getFiles(compsBase32, with_tests) {
     var memo = {},
         comps;
 
@@ -47,16 +47,22 @@ function getFiles(compsBase32) {
         }
     }
 
-    for (var i in deps) {
+    var all = deps.lib_files;
+    if (with_tests) {
+        all["tests"] = deps.test_files.Tests
+    } else {
+        delete all.tests
+    };
+    for (var i in all) {
         if (comps) {
             if (parseInt(comps.pop(), 2) === 1) {
                 console.log('\t* ' + i);
-                addFiles(deps[i].src);
+                addFiles(all[i].src);
             } else {
                 console.log('\t  ' + i);
             }
         } else {
-            addFiles(deps[i].src);
+            addFiles(all[i].src);
         }
     }
 
@@ -73,7 +79,7 @@ exports.getFiles = getFiles;
 
 exports.lint = function () {
 
-    var files = getFiles();
+    var files = getFiles(false, true);
 
     console.log('Checking for JS errors...');
 
@@ -116,14 +122,15 @@ function combineFiles(files) {
 
 exports.build = function (compsBase32, buildName) {
 
-    var files = getFiles(compsBase32);
+    var files = getFiles(compsBase32, false);
+    console.log(files)
 
     console.log('Concatenating ' + files.length + ' files...');
 
     var copy = fs.readFileSync('src/copyright.js', 'utf8'),
         newSrc =  combineFiles(files);
 
-        pathPart = 'dist/leaflet.dbpedialayer' + (buildName ? '-' + buildName : ''),
+        pathPart = 'dist/wps_builder' + (buildName ? '-' + buildName : ''),
         srcPath = pathPart + '-src.js',
 
         oldSrc = loadSilently(srcPath),

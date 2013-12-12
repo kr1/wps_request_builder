@@ -1,5 +1,5 @@
 
-var deps = {
+var lib_files = {
     wps_builder: {
         src: ['wps_builder.js'],
         desc: 'the main file',
@@ -11,6 +11,9 @@ var deps = {
         desc: 'the helpers',
         heading: 'Helpers'
     },
+};
+
+var test_files = {
     Tests: {
         src: ['../tests/geom_and_wfs_layer.js',
               '../tests/feature_chaining.js',
@@ -18,10 +21,12 @@ var deps = {
               '../tests/coverage_import.js',
               '../tests/simple_geom.js',
               ],
-        desc: 'the helpers',
-        heading: 'Helpers'
+        desc: 'the test files',
+        heading: 'Tests'
     },
-}
+};
+
 if (typeof exports !== 'undefined') {
-    exports.deps = deps;
-}
+    exports.lib_files = lib_files;
+    exports.test_files = test_files;
+};

@@ -6,8 +6,7 @@ var lib_files = {
         heading: 'Main'
     },
     Helpers: {
-        src: ['utils.js',
-              'transport.js'],
+        src: ['transport.js'],
         desc: 'the helpers',
         heading: 'Helpers'
     },

@@ -49,9 +49,9 @@
             wcsIdentifier, wcsIdentifierCont, getCoverage, domainSubset,
             output, litData, litDataCont;
         input.appendChild(identifier);
-        if (inputDef.mimeType && inputDef.mimeType === "application/wkt") {
+        if (inputDef.mimeType) {
             data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data");
-            cd = docu.createElement("wps:ComplexData");
+            cd = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:ComplexData");
             cd.setAttribute("mimeType", inputDef.mimeType);
             cdCont = docu.createCDATASection(inputDef.data);
             cd.appendChild(cdCont);

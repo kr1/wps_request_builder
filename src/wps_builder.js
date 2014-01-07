@@ -16,21 +16,21 @@
     };
 
     exports.makeExecuteNode = function (docu) {
-        var node = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Execute");
+        var node = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Execute");
         node.setAttribute("version", "1.0.0");
         node.setAttribute("service", "WPS");
         return node;
     };
 
     exports.addIdentifier = function (identText, docu, exec) {
-        var ident = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier");
+        var ident = docu.createElementNS("http://www.opengis.net/ows/1.1", "Identifier");
         var identCont = docu.createTextNode(identText);
         ident.appendChild(identCont);
         exec.appendChild(ident);
     };
 
     exports.addInputs = function (inputsDef, docu, exec) {
-        var inputs = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:DataInputs"),
+        var inputs = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "DataInputs"),
             input;
         for (var idx = 0; idx < inputsDef.length; idx++) {
             input = exports.addInput(inputsDef[idx], docu, exec);
@@ -40,39 +40,36 @@
     };
 
     exports.addInput = function (inputDef, docu) {
-        var input = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Input"),
-            identifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier"),
+        var input = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Input"),
+            identifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "Identifier"),
             identifierCont = docu.createTextNode(inputDef.identifier),
-            //title = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Title"),
-            //titleCont = docu.createTextNode(inputDef.identifier),
             data, cd, cdCont, reference, body, getFeature, query,
             wcsIdentifier, wcsIdentifierCont, getCoverage, domainSubset,
             output, litData, litDataCont;
         input.appendChild(identifier);
         if (inputDef.mimeType) {
-            data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data");
-            cd = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:ComplexData");
+            data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Data");
+            cd = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "ComplexData");
             cd.setAttribute("mimeType", inputDef.mimeType);
             cdCont = docu.createCDATASection(inputDef.data);
             cd.appendChild(cdCont);
             data.appendChild(cd);
             input.appendChild(data);
         } else if (inputDef.reference) {
-            reference = docu.createElement("wps:Reference");
-            body = docu.createElement("wps:Body");
+            reference = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Reference");
+            body = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Body");
             if (inputDef.reference.type === "wfs") {
                 reference.setAttribute("mimeType", "text/xml");
-                reference.setAttribute("xlink:href", "http://geoserver/wfs");
-                //reference.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+                reference.setAttributeNS("http://www.w3.org/1999/xlink", "href", "http://geoserver/wfs");
                 reference.setAttribute("method", "POST");
-                getFeature = docu.createElement("wfs:GetFeature");
-                getFeature.setAttribute("xmlns:wfs", "http://www.opengis.net/wfs");
-                getFeature.setAttribute("xmlns:" + inputDef.typeName.split(":")[0],
+                getFeature = docu.createElementNS("http://www.opengis.net/wfs", "GetFeature");
+                //getFeature.setAttributeNS("http://www.w3.org/1999/xhtml", inputDef.typeName.split(":")[0],
+                getFeature.setAttribute(inputDef.typeName.split(":")[0],
                                         (inputDef.typeNamespace || "http://www.openplans.org/topp"));
                 getFeature.setAttribute("service", "WFS");
                 getFeature.setAttribute("version", "1.0.0");
                 getFeature.setAttribute("outputFormat", "GML2");
-                query = docu.createElement("wfs:Query");
+                query = docu.createElementNS("http://www.opengis.net/wfs", "Query");
                 query.setAttribute("typeName", inputDef.typeName);
                 reference.appendChild(body);
                 body.appendChild(getFeature);
@@ -80,18 +77,17 @@
                 input.appendChild(reference);
             } else if (inputDef.reference.type === "wcs") {
                 reference.setAttribute("mimeType", "image/tiff");
-                reference.setAttribute("xlink:href", "http://geoserver/wcs");
-                reference.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+                reference.setAttributeNS("http://www.w3.org/1999/xlink", "href", "http://geoserver/wcs");
                 reference.setAttribute("method", "POST");
-                wcsIdentifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier");
+                wcsIdentifier = docu.createElementNS("http://www.opengis.net/ows/1.1", "Identifier");
                 wcsIdentifierCont = docu.createTextNode(inputDef.reference.identifier);
                 wcsIdentifier.appendChild(wcsIdentifierCont);
-                getCoverage = docu.createElementNS("http://www.opengis.net/wcs/1.1.1", "wcs:GetCoverage");
+                getCoverage = docu.createElementNS("http://www.opengis.net/wcs/1.1.1", "GetCoverage");
                 getCoverage.setAttribute("service", "WCS");
                 getCoverage.setAttribute("version", "1.1.1");
                 getCoverage.appendChild(wcsIdentifier);
-                domainSubset = docu.createElement("wcs:DomainSubset");
-                output = docu.createElement("wcs:Output");
+                domainSubset = docu.createElementNS("http://www.opengis.net/wcs/1.1.1", "DomainSubset");
+                output = docu.createElementNS("http://www.opengis.net/wcs/1.1.1", "Output");
                 output.setAttribute("format", "image/tiff");
                 getCoverage.appendChild(domainSubset);
                 getCoverage.appendChild(output);
@@ -102,11 +98,10 @@
         } else if (inputDef.subprocess) {
             var proc = inputDef.subprocess,
                 subtree = exports.makeExecuteNode(docu);
-            body = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Body");
-            reference = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Reference");
+            body = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Body");
+            reference = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Reference");
             reference.setAttribute("mimeType", (inputDef.mimeType ? inputDef.mimeType : "text/xml; subtype=gml/3.1.1"));
-            reference.setAttribute("xlink:href", "http://geoserver/wps");
-            reference.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            reference.setAttributeNS("http://www.w3.org/1999/xlink", "href", "http://geoserver/wps");
             reference.setAttribute("method", "POST");
             reference.appendChild(body);
             body.appendChild(subtree);
@@ -117,27 +112,24 @@
             exports.addResponseForm(proc.response, docu, subtree);
             input.appendChild(reference);
         } else { //plain input ad data
-            data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:Data");
-            litData = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:LiteralData");
+            data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Data");
+            litData = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "LiteralData");
             litDataCont = docu.createTextNode(inputDef.data);
             litData.appendChild(litDataCont);
             data.appendChild(litData);
             input.appendChild(data);
         }
         identifier.appendChild(identifierCont);
-        // TODO: check: is title necessary?
-        //title.appendChild(titleCont);
-        //input.appendChild(title);
         return input;
     };
 
     exports.addResponseForm = function (responseDef, docu, exec) {
-        var resp = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:ResponseForm"),
-            rawDataOut = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "wps:RawDataOutput");
+        var resp = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "ResponseForm"),
+            rawDataOut = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "RawDataOutput");
         if (responseDef.mimeType) {
             rawDataOut.setAttribute("mimeType", responseDef.mimeType);
         }
-        var ident = docu.createElementNS("http://www.opengis.net/ows/1.1", "ows:Identifier"),
+        var ident = docu.createElementNS("http://www.opengis.net/ows/1.1", "Identifier"),
             identCont = docu.createTextNode(responseDef.identifier);
         ident.appendChild(identCont);
         rawDataOut.appendChild(ident);

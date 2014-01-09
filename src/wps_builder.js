@@ -47,7 +47,7 @@
             wcsIdentifier, wcsIdentifierCont, getCoverage, domainSubset,
             output, litData, litDataCont;
         input.appendChild(identifier);
-        if (inputDef.mimeType) {
+        if (inputDef.mimeType && inputDef.mimeType !== "image/tiff") {
             data = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "Data");
             cd = docu.createElementNS("http://www.opengis.net/wps/1.0.0", "ComplexData");
             cd.setAttribute("mimeType", inputDef.mimeType);

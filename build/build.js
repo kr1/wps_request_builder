@@ -128,7 +128,8 @@ exports.build = function (compsBase32, buildName) {
     console.log('Concatenating ' + files.length + ' files...');
 
     var copy = fs.readFileSync('src/copyright.js', 'utf8'),
-        newSrc =  combineFiles(files);
+        amd_boilerplate = fs.readFileSync('build/amd_boilerplate.js', 'utf8'),
+        newSrc = copy + amd_boilerplate.replace(/___code_here___/, combineFiles(files));
 
         pathPart = 'dist/wps_builder' + (buildName ? '-' + buildName : ''),
         srcPath = pathPart + '-src.js',

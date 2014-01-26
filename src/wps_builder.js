@@ -1,4 +1,6 @@
-(function (exports) {
+/*jshint -W015 */
+
+    exports = {};
 
     exports.makeExecuteDocument = function () {
         var namespaces = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
@@ -162,4 +164,3 @@
         var s = new XMLSerializer();
         return s.serializeToString(xml);
     };
-})((typeof(exports) === "undefined") ? this.wpsBuilder = {} : exports);

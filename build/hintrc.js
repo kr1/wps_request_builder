@@ -23,7 +23,6 @@ exports.config = {
     "quotmark": "double",
 
     // whitespace
-    "indent": 4,
     "trailing": true,
     "white": true,
     "smarttabs": true,

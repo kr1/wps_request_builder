@@ -1,17 +1,18 @@
-/* global wpsBuilder */
-(function (proto) {
+/*jshint -W015 */
+
+    exports.transport = {};
+
     /**
      * sendQuery() sends an ajax call. it accepts the following params
      * @param {string} url
      * @param {string} payload
      * @param {function} successCallback
      * @param {object} options:
-     *                     - trackLoading -> function, to visualize query progress
      *                     - errorCallback -> function
      *                     - completeCallback -> function
      * @returns {number} lastAjax
      */
-    function sendQuery(url, payload, successCallback, options) {
+    exports.transport._sendQuery = function (url, payload, successCallback, options) {
         options = options || {};
         var ajaxSetup = {
             dataType: "json",
@@ -41,8 +42,6 @@
             }
         };
         req.send(payload);
-        proto.currentAjax = req;
+        exports.transport.currentAjax = req;
         return req;
-    }
-    proto._sendQuery = sendQuery;
-})(typeof exports === "undefined" ?  wpsBuilder.transport = {} : exports);
+    };

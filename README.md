@@ -7,6 +7,8 @@ this means that you - the developer - have to know:
   - which processes are available on the target-server and
   - which inputs the single processes expect.
 
+It has no external dependencies and can therefore be used with any mapping-framework or library (leaflet, openlayers, etc.)
+
 ## Getting started
 
 1. define the process that you want to call, as a javascript object:
@@ -26,7 +28,7 @@ this means that you - the developer - have to know:
 
 1. build the xml-document:
 
-        var doc = wpsBuilder.buildExample(procDef);
+        var doc = wpsBuilder.build(procDef);
 
 1. serialize the doc to string:
 

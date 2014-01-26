@@ -19,13 +19,4 @@ task('lint', build.lint);
 desc('Combine and compress source files');
 task('build', ['lint'], build.build);
 
-desc('run all tests in spec folder');
-task('test', [], build.test);
-
-desc('run unit tests in spec/unit folder');
-task('unit', [], build.runUnitTests);
-
-desc('run functional tests in spec/functional folder');
-task('functional', [], build.runFunctionalTests);
-
 task('default', ['build']);
